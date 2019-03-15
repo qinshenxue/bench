@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        <%= title %>
+    </title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+    <h1>
+        <%= title %>
+    </h1>
+    <p>Welcome to
+        <%= title %>
+    </p>
+
+    <button onclick="openCMD()">openCMD</button>
+    <button onclick="exec()">exec</button>
+    <p>
+        <button onclick="appList()">app List</button>
+        <button onclick="appAdd()">app Add</button>
+        <button onclick="appUpdate()">app update</button>
+    </p>
+
+
+    <script>
+        function openCMD() {
+            fetch('/shell/openCMD', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    cwd: 'd:/www/plan',
+                    cmd: 'git pull && pause'
+                })
+            })
+        }
+
+
+        function exec() {
+            fetch('/shell/exec', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    cwd: 'd:/www/plan',
+                    cmd: 'git status -z -u'
+                })
+            }).then(res => res.json()).then(res => {
+                console.log(res)
+            })
+        }
+
+
+        function appList() {
+            fetch('/app/list', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(res => res.json()).then(res => {
+                console.log(res)
+            })
+        }
+
+        function appAdd() {
+            fetch('/app/add', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(res => res.json()).then(res => {
+                console.log(res)
+            })
+        }
+
+        function appUpdate() {
+            fetch('/app/update', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(res => res.json()).then(res => {
+                console.log(res)
+            })
+        }
+    </script>
+</body>
+
+</html>
