@@ -1,6 +1,8 @@
 const knex = require('../db/index');
 
 
+
+
 exports.list = function (req, res) {
 
     knex.select().from('apps').then(function (doc) {
@@ -21,6 +23,11 @@ exports.add = function (req, res) {
     knex.insert({
         app_name: 'CI发布',
         app_icon: 'ydjh',
+        script:`{
+            methods:{
+                onAppClick:function(){alert(1)}
+            }
+        }`
 
     }).into('apps').then(id => {
         res.json({

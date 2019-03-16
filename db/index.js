@@ -9,6 +9,10 @@ knex.schema.hasTable('apps').then(function (exists) {
             table.string('app_name');
             table.string('app_icon');
             table.string('version');
+            table.string('type');
+            table.string('script');
+            table.string('style');
+            table.string('template');
             table.timestamp('created_at').defaultTo(knex.fn.now())
         })
     }

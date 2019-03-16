@@ -6,6 +6,11 @@
         <%= title %>
     </title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="/js/vue.min.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
 </head>
 
 <body>
@@ -16,6 +21,25 @@
         <%= title %>
     </p>
 
+    <% apps.forEach(function(item){ %>
+
+        <% if(item.type===1) { %>
+        
+        <div>
+                <%- item.template %>
+        </div>
+
+        <script>
+            new Vue(<%- item.script %>).$mount('#app-<%= item.id %>')
+        </script>
+        <% } else { %>
+            <button @click="onAppClick" id="app-<%= item.id %>"><%= item.app_name %></button>
+
+            <script>
+                new Vue(<%- item.script %>).$mount('#app-<%= item.id %>')
+            </script>
+        <% } %>
+    <% }) %>
     <button onclick="openCMD()">openCMD</button>
     <button onclick="exec()">exec</button>
     <p>
