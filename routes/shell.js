@@ -23,9 +23,11 @@ exports.openCMD = function (req, res) {
 
 exports.exec = function (req, res) {
     exec(`${req.body.cmd}`, {
+        encoding: 'buffer',
         cwd: req.body.cwd
     }, function (err, stdout, stderr) {
         if (err) {
+            console.log(iconv.decode(stderr, 'cp936'))
             res.send({
                 success: 0,
                 data: iconv.decode(stderr, 'cp936')

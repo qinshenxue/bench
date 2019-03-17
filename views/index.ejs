@@ -10,58 +10,126 @@
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <script src="/js/vue.min.js"></script>
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
-
+<script>Vue.config.devtools=true</script>
 </head>
 
 <body>
-    <h1>
-        <%= title %>
-    </h1>
-    <p>Welcome to
-        <%= title %>
-    </p>
+
+    <div id="topbar"></div>
+    <script type="text/html" id="tpl-topbar">
+        <div>
+            <el-button type="primary" @click="addApp">添加应用</el-button>
+
+
+            <el-dialog
+  title="提示"
+  :visible.sync="dialogVisible"
+  width="80%"
+  >
+  <el-form :model="form"  size="small" label-width="100px">
+        <el-form-item label="名称">
+          <el-input v-model="form.app_name" ></el-input>
+        </el-form-item>
+        <el-form-item label="类型">
+          <el-select v-model="form.app_type" >
+            <el-option label="按钮" value="1"></el-option>
+            <el-option label="面板" value="2"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="template">
+                <el-input type="textarea" v-model="form.template" ></el-input>
+              </el-form-item>
+              <el-form-item label="script">
+                    <el-input type="textarea" v-model="form.script" ></el-input>
+                  </el-form-item>
+                  <el-form-item label="style">
+                        <el-input type="textarea" v-model="form.style" ></el-input>
+                      </el-form-item>
+      </el-form>
+  <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="save">确 定</el-button>
+  </span>
+</el-dialog>
+           
+        </div>
+    </script>
+    <script>
+        new Vue({
+            el: '#topbar',
+            template: '#tpl-topbar',
+            data: function () {
+                return {
+                    form: {
+
+                    },
+                    dialogVisible: false
+                }
+            },
+            methods: {
+                addApp: function () {
+                    this.form = {
+                        app_type: '1',
+                        app_name: '',
+                        script: '',
+                        template: '',
+                        style: ''
+                    }
+                    this.dialogVisible = true
+                },
+                save: function () {
+                    fetch('/app/add', {
+                        method: 'post',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(this.form)
+                    }).then(res => res.json()).then(res => {
+                        this.dialogVisible = false
+                        this.$message.success(res.message)
+                    })
+                }
+            }
+
+        })
+    </script>
+    
 
     <% apps.forEach(function(item){ %>
 
-        <% if(item.type===1) { %>
-        
-        <div>
+    <% if(item.app_type==='2') { %>
+        <div id="app-<%= item.id %>"></div>
+    <script type="text/html" id="tpl-app-<%= item.id %>">
                 <%- item.template %>
-        </div>
-
-        <script>
-            new Vue(<%- item.script %>).$mount('#app-<%= item.id %>')
         </script>
-        <% } else { %>
-            <button @click="onAppClick" id="app-<%= item.id %>"><%= item.app_name %></button>
 
-            <script>
-                new Vue(<%- item.script %>).$mount('#app-<%= item.id %>')
-            </script>
-        <% } %>
+    <script>
+       var app<%= item.id %> = new Vue(Object.assign(<%- item.script %>,{template:'#tpl-app-<%= item.id %>'})).$mount('#app-<%= item.id %>')
+    </script>
+    <% } else { %>
+    <div id="app-<%= item.id %>">
+    <button @click="onAppClick" ><%= item.app_name %></button>
+    </div>
+    <script type="text/javascript">
+      var app<%= item.id %> =   new Vue(
+          Object.assign(
+              {methods:{
+                  onAppClick:function(){alert('未指定')}
+                }
+                }
+          ,<%- item.script %>))
+          .$mount('#app-<%= item.id %>')
+    </script>
+
+    <% } %>
     <% }) %>
-    <button onclick="openCMD()">openCMD</button>
+    <!-- <button onclick="openCMD()">openCMD</button>
     <button onclick="exec()">exec</button>
-    <p>
-        <button onclick="appList()">app List</button>
-        <button onclick="appAdd()">app Add</button>
-        <button onclick="appUpdate()">app update</button>
-    </p>
+ -->
 
 
     <script>
-        function openCMD() {
-            fetch('/shell/openCMD', {
-                method: 'post',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    cwd: 'd:/www/plan',
-                    cmd: 'git pull && pause'
-                })
-            })
-        }
+        
 
 
         function exec() {
@@ -78,41 +146,6 @@
                 console.log(res)
             })
         }
-
-
-        function appList() {
-            fetch('/app/list', {
-                method: 'post',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(res => res.json()).then(res => {
-                console.log(res)
-            })
-        }
-
-        function appAdd() {
-            fetch('/app/add', {
-                method: 'post',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(res => res.json()).then(res => {
-                console.log(res)
-            })
-        }
-
-        function appUpdate() {
-            fetch('/app/update', {
-                method: 'post',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(res => res.json()).then(res => {
-                console.log(res)
-            })
-        }
-    </script>
 </body>
 
 </html>

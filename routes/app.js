@@ -20,16 +20,7 @@ exports.list = function (req, res) {
 }
 
 exports.add = function (req, res) {
-    knex.insert({
-        app_name: 'CI发布',
-        app_icon: 'ydjh',
-        script:`{
-            methods:{
-                onAppClick:function(){alert(1)}
-            }
-        }`
-
-    }).into('apps').then(id => {
+    knex.insert(req.body).into('apps').then(id => {
         res.json({
             success: 1,
             data: id
@@ -44,11 +35,8 @@ exports.add = function (req, res) {
 
 exports.update = function (req, res) {
     knex('apps').where({
-        id: 1
-    }).update({
-        app_name: 'mce build'
-
-    }).then(id => {
+        id: req.body.id
+    }).update(req.body).then(id => {
         res.json({
             success: 1,
             data: id
