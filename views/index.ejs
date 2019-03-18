@@ -3,7 +3,7 @@
 
 <head>
     <title>
-        <%= title %>
+        个人高效工作台
     </title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
 
@@ -123,29 +123,7 @@
 
     <% } %>
     <% }) %>
-    <!-- <button onclick="openCMD()">openCMD</button>
-    <button onclick="exec()">exec</button>
- -->
 
-
-    <script>
-        
-
-
-        function exec() {
-            fetch('/shell/exec', {
-                method: 'post',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    cwd: 'd:/www/plan',
-                    cmd: 'git status -z -u'
-                })
-            }).then(res => res.json()).then(res => {
-                console.log(res)
-            })
-        }
 </body>
 
 </html>
