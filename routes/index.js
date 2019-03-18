@@ -29,5 +29,9 @@ router.post('/app/list', app.list)
 router.post('/app/add', app.add)
 router.post('/app/update', app.update)
 
+const http = require('./http')
+router.post('/http/post', app.post)
+router.post('/http/get', app.get)
+
 
 module.exports = router;
