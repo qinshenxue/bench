@@ -30,5 +30,22 @@ Bench = {
 
             }).then(res => res.json())
         }
+    },
+
+    shell: {
+        openCMD: function (dir, cmd) {
+            fetch('/shell/openCMD', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    cwd: dir,
+                    cmd: cmd
+                })
+            }).then(res => res.json()).then(res => {
+                console.log(res)
+            })
+        }
     }
 }
