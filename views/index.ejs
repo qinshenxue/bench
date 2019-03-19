@@ -8,6 +8,8 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
 
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+
+    <script src="/js/bench.js"></script>
     <script src="/js/vue.min.js"></script>
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
 <script>Vue.config.devtools=true</script>
@@ -108,17 +110,12 @@
     </script>
     <% } else { %>
     <div id="app-<%= item.id %>">
-    <button @click="onAppClick" ><%= item.app_name %></button>
+    <button onclick="_app_<%= item.id %>_click()" ><%= item.app_name %></button>
     </div>
     <script type="text/javascript">
-      var app<%= item.id %> =   new Vue(
-          Object.assign(
-              {methods:{
-                  onAppClick:function(){alert('未指定')}
-                }
-                }
-          ,<%- item.script %>))
-          .$mount('#app-<%= item.id %>')
+        function _app_<%= item.id %>_click(){
+            <%- item.script %>
+        }
     </script>
 
     <% } %>

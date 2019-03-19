@@ -30,8 +30,8 @@ router.post('/app/add', app.add)
 router.post('/app/update', app.update)
 
 const http = require('./http')
-router.post('/http/post', app.post)
-router.post('/http/get', app.get)
+router.post('/http/post', http.post)
+router.post('/http/get', http.get)
 
 
 module.exports = router;
