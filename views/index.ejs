@@ -5,13 +5,14 @@
     <title>
         个人高效工作台
     </title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
 
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel='stylesheet' href='/stylesheets/style.css' />
 
     <script src="/js/bench.js"></script>
     <script src="/js/vue.min.js"></script>
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="/js/socket.io.js"></script>
 <script>Vue.config.devtools=true</script>
 </head>
 
@@ -29,6 +30,16 @@
   width="80%"
   >
   <el-form :model="form"  size="small" label-width="100px">
+  <el-upload
+  class="avatar-uploader"
+  action="/file/upload"
+  :show-file-list="false"
+  :on-success="uploadSuccess"
+  :before-upload="beforeUpload">
+  <img v-if="form.app_icon" :src="form.app_icon" class="app-icon">
+  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+</el-upload>
+
         <el-form-item label="名称">
           <el-input v-model="form.app_name" ></el-input>
         </el-form-item>
@@ -63,7 +74,7 @@
             data: function () {
                 return {
                     form: {
-
+                        
                     },
                     dialogVisible: false
                 }
@@ -75,7 +86,8 @@
                         app_name: '',
                         script: '',
                         template: '',
-                        style: ''
+                        style: '',
+                        app_icon:''
                     }
                     this.dialogVisible = true
                 },
@@ -90,13 +102,17 @@
                         this.dialogVisible = false
                         this.$message.success(res.message)
                     })
-                }
+                },
+                uploadSuccess:function(res){
+                    this.form.app_icon  = res.data.url
+                },
+                beforeUpload:function(){}
             }
 
         })
     </script>
     
-
+<div class="app-list">
     <% apps.forEach(function(item){ %>
 
     <% if(item.app_type==='2') { %>
@@ -109,8 +125,9 @@
        var app<%= item.id %> = new Vue(Object.assign(<%- item.script %>,{template:'#tpl-app-<%= item.id %>'})).$mount('#app-<%= item.id %>')
     </script>
     <% } else { %>
-    <div id="app-<%= item.id %>">
-    <button onclick="_app_<%= item.id %>_click()" ><%= item.app_name %></button>
+    <div class="app" id="app-<%= item.id %>">
+        <div class="app-icon"  style="background-image:url(<%= item.app_icon %>)" onclick="_app_<%= item.id %>_click()"></div>
+        <div class="app-name"><%= item.app_name %></div>
     </div>
     <script type="text/javascript">
         function _app_<%= item.id %>_click(){
@@ -120,7 +137,40 @@
 
     <% } %>
     <% }) %>
+</div>
 
+<div class="console">
+<ul class="console-log" ref="log">
+<li v-for="msg in msgList">
+{{msg.msg}}
+</li>
+</ul>
+</div>
+<script type="text/javascript">
+Bench.console = new Vue({
+    el:'.console',
+    data:function(){
+        return {
+            msgList:[{
+                msg:'console ready'
+            }]
+        }
+    },
+    created:function(){
+
+    },
+    methods:{
+        log:function(msg){
+            this.msgList.push({
+                msg:msg
+            })
+            this.$nextTick(function(){
+                this.$refs.log.scrollTop = this.$refs.log.scrollHeight
+            })
+        }
+    }
+})
+</script>
 </body>
 
 </html>

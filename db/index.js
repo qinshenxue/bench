@@ -13,6 +13,7 @@ knex.schema.hasTable('apps').then(function (exists) {
             table.string('script');
             table.string('style');
             table.string('template');
+            table.integer('status');
             table.timestamp('created_at').defaultTo(knex.fn.now())
         })
     }
